@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>繁簡轉換工具</title>
+</head>
+<body>
+  <h1>繁體 ⇄ 簡體 中文轉換</h1>
+
+  <h2>繁體 → 簡體</h2>
+  <textarea id="inputText" rows="4" cols="50" placeholder="輸入繁體中文"></textarea>
+  <br>
+  <button id="convertToSimplified">轉換成簡體</button>
+  <br>
+  <textarea id="outputSimplified" rows="4" cols="50" placeholder="簡體中文" readonly></textarea>
+  <button id="copySimplified">複製簡體</button>
+
+  <hr>
+
+  <h2>簡體 → 繁體</h2>
+  <textarea id="inputTextSimplified" rows="4" cols="50" placeholder="輸入簡體中文"></textarea>
+  <br>
+  <button id="convertToTraditional">轉換成繁體</button>
+  <br>
+  <textarea id="outputTraditional" rows="4" cols="50" placeholder="繁體中文" readonly></textarea>
+  <button id="copyTraditional">複製繁體</button>
+
+  <!-- 引入 opencc-js -->
+  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.min.js"></script>
+  <script>
+    // 初始化兩種轉換
+    const converterToSimplified = OpenCC.Converter({ from: 'twp', to: 'cn' });
+    const converterToTraditional = OpenCC.Converter({ from: 'cn', to: 'twp' });
+
+    // 繁體→簡體按鈕
+    document.getElementById('convertToSimplified').addEventListener('click', async () => {
+      const text = document.getElementById('inputText').value;
+      const result = await converterToSimplified(text);
+      document.getElementById('outputSimplified').value = result;
+    });
+
+    // 簡體→繁體按鈕
+    document.getElementById('convertToTraditional').addEventListener('click', async () => {
+      const text = document.getElementById('inputTextSimplified').value;
+      const result = await converterToTraditional(text);
+      document.getElementById('outputTraditional').value = result;
+    });
+
+    // 複製函式
+    function copyToClipboard(elementId) {
+      const text = document.getElementById(elementId).value;
+      navigator.clipboard.writeText(text)
+        .then(() => alert('已複製到剪貼簿！'))
+        .catch(err => alert('複製失敗：' + err));
+    }
+
+    // 綁定複製按鈕
+    document.getElementById('copySimplified').addEventListener('click', () => {
+      copyToClipboard('outputSimplified');
+    });
+    document.getElementById('copyTraditional').addEventListener('click', () => {
+      copyToClipboard('outputTraditional');
+    });
+  </script>
+</body>
+</html>
